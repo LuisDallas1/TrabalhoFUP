@@ -26,5 +26,3 @@ int removerjogador(time* time);
 void selecionartitulares(time* time);
 
 void removertitular(time* time);
-
-void gerenciarFormacao(time *time);
