@@ -25,3 +25,7 @@ int removerjogador(time* time);
 void selecionartitulares(time* time);
 
 void removertitular(time* time);
+
+void gerenciartitulares(time* time);
+
+void imprimirtabela(time* time);
