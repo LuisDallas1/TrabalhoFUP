@@ -2,7 +2,6 @@ typedef struct
 {
     char nome[100];
     int numero;
-    char tipo;
 
 }jogador;
 
