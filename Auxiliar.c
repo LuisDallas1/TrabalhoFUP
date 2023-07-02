@@ -4,56 +4,48 @@
 #include "Auxiliar2.h"
 
 int adicionarjogador(time* time) {
-
-    
-    jogador jogador;
+    jogador novoJogador;
     char chave, chave1;
 
     printf("Digite o nome do jogador: ");
-    scanf(" %[^\n]", jogador.nome);
+    scanf(" %[^\n]", novoJogador.nome);
 
     printf("Digite o numero da camisa: ");
-    scanf("%d", &jogador.numero);
-    while (verificarnumeroexistente(time, jogador.numero))
-    {
-        printf("Esse numero ja foi usado! Digite novamente o numero do jogador.\n");
-        scanf("%d", &jogador.numero);
+    scanf("%d", &novoJogador.numero);
+
+    int i;
+    for (i = 0; i < time->numtitulares; i++) {
+        if (time->titulares[i].numero == novoJogador.numero) {
+            printf("Esse numero ja esta na lista de titulares. O jogador nao pode ser adicionado.\n");
+            return 0;
+        }
     }
+
+    while (verificarnumeroexistente(time, novoJogador.numero)) {
+        printf("Esse numero ja foi usado! Digite novamente o numero do jogador.\n");
+        scanf("%d", &novoJogador.numero);
+    }
+
+    time->jogadores = realloc(time->jogadores, (time->numjogadores + 1) * sizeof(jogador));
+    time->jogadores[time->numjogadores] = novoJogador;
+    time->numjogadores++;
 
     system("cls");
 
-    printf("Tem certeza que deseja adicionar esse jogador?[S/N]\n");
-    scanf(" %c", &chave);
+    printf("Jogador adicionado com sucesso.\n");
 
-    if (chave == 'S' || chave == 's')
-    {
-        time->jogadores = realloc(time->jogadores, (time->numjogadores + 1) * sizeof(jogador));
-        time->jogadores[time->numjogadores] = jogador;
-        time->numjogadores++;
 
-        system("cls");
-
-        printf("Jogador adicionado com sucesso.\n");
-    }
-    else
-    {
-        printf("Jogador nao adicionado.\n");
-    }
-
-    if (time->numjogadores<15)
-    {
-        printf("Voce deseja adicionar outro jogador?[S/N]\n");
+    if (time->numjogadores < 15) {
+        printf("Voce deseja adicionar outro jogador? [S/N]\n");
         scanf(" %c", &chave1);
 
         system("cls");
 
-        if (chave1 == 'S' || chave1 == 's')
-        {
-        adicionarjogador(time);
+        if (chave1 == 'S' || chave1 == 's') {
+            adicionarjogador(time);
         }
-
     }
-    
+
     return 0;
 }
 
@@ -73,7 +65,6 @@ int visualizarjogadores(time* time) {
     for (int i = 0; i < time->numjogadores; i++) {
         const jogador* jogador = &(time->jogadores[i]);
 
-        // Verifica se o jogador não está na lista de titulares
         int jogadorReserva = 1;
         for (int j = 0; j < time->numtitulares; j++) {
             if (time->titulares[j].numero == jogador->numero) {
@@ -102,19 +93,28 @@ int verificarnumeroexistente(time* time, int numero) {
     for (int i = 0; i < time->numjogadores; i++) {
         const jogador* jogador = &(time->jogadores[i]);
         if (jogador->numero == numero) {
-            return 1; // Número já existe
+            return 1;
         }
     }
-    return 0; // Número não existe
+    return 0;
 }
 
 int removerjogador(time* time) {
     int numero;
     int i;
 
+
+    printf("Jogadores disponiveis:\n");
+    for (i = 0; i < time->numjogadores; i++) {
+        printf("Nome: %s\n", time->jogadores[i].nome);
+        printf("Numero da camisa: %d\n", time->jogadores[i].numero);
+        printf("-------------------------\n");
+    }
+
     printf("Digite o numero da camisa do jogador que deseja remover: ");
     scanf("%d", &numero);
     system("cls");
+
     for (i = 0; i < time->numjogadores; i++) {
         if (time->jogadores[i].numero == numero) {
             printf("Tem certeza que deseja remover o jogador %s (camisa %d)? [S/N]\n", time->jogadores[i].nome, time->jogadores[i].numero);
@@ -135,9 +135,15 @@ int removerjogador(time* time) {
                 system("cls");
                 printf("Jogador não removido.\n");
             }
+
+            if (time->numjogadores == 0) {
+            system("cls");
+            printf("Nao ha jogadores disponiveis para remover.\n");
+            return 0;
+            }else{
             printf("Voce deseja remover outro jogador?[S/N]\n");
             scanf(" %c", &chave1);
-
+            }
             system("cls");
 
             if (chave1 == 'S' || chave1 == 's')
@@ -153,14 +159,23 @@ int removerjogador(time* time) {
 }
 
 void selecionartitulares(time* time) {
+
+    if (time->numjogadores == 0) {
+        printf("Nenhum jogador para adicionar.\n");
+        printf("Digite algo para retornar ao menu.\n");
+        scanf("%*c");
+        getchar();
+        system("cls");
+        gerenciartitulares(time);;
+    }
+
     if (time->numjogadores == 0) {
         printf("Nenhum jogador adicionado.\n");
         return;
     }
 
-    time->titulares = malloc(15 * sizeof(jogador)); // Aloca memória para a lista de jogadores titulares
-    time->numtitulares = 0; // Inicializa o número de jogadores titulares
-
+    time->titulares = malloc(15 * sizeof(jogador)); 
+    time->numtitulares = 0; 
     printf("Selecione os jogadores titulares:\n");
     printf("Digite o numero do jogador para adiciona-lo como titular.\n");
     printf("Digite 0 para encerrar a selecao de titulares.\n");
@@ -172,7 +187,6 @@ void selecionartitulares(time* time) {
             const jogador* jogador = &(time->jogadores[i]);
             int jogadorDisponivel = 1;
 
-            // Verifica se o jogador já foi selecionado como titular
             for (int j = 0; j < time->numtitulares; j++) {
                 if (time->titulares[j].numero == jogador->numero) {
                     jogadorDisponivel = 0;
@@ -193,6 +207,7 @@ void selecionartitulares(time* time) {
             printf("Nenhum outro jogador disponivel. (Digite algo para voltar ao menu)\n");
             scanf("%*c");
             getchar();
+            gerenciartitulares(time);
             break;
         }
 
@@ -201,7 +216,7 @@ void selecionartitulares(time* time) {
         scanf("%d", &numero);
 
         if (numero == 0) {
-            break; // Encerra a seleção de titulares
+            break;
         }
 
         int jogadorEncontrado = 0;
@@ -209,7 +224,6 @@ void selecionartitulares(time* time) {
             if (time->jogadores[i].numero == numero) {
                 jogadorEncontrado = 1;
 
-                // Verifica se o jogador já foi adicionado como titular
                 int titularEncontrado = 0;
                 for (int j = 0; j < time->numtitulares; j++) {
                     if (time->titulares[j].numero == numero) {
@@ -221,11 +235,10 @@ void selecionartitulares(time* time) {
                 if (titularEncontrado) {
                     printf("Jogador de numero %d ja adicionado como titular.\n", numero);
                 } else {
-                    if (time->numtitulares < 7) {
+                    if (time->numtitulares < 6) {
                         time->titulares[time->numtitulares] = time->jogadores[i];
                         time->numtitulares++;
 
-                        // Remove o jogador do vetor de jogadores disponíveis
                         for (int j = i; j < time->numjogadores - 1; j++) {
                             time->jogadores[j] = time->jogadores[j + 1];
                         }
@@ -236,6 +249,7 @@ void selecionartitulares(time* time) {
                         printf("Limite de jogadores titulares atingido.\n");
                         scanf("%*c");
                         getchar();
+                        gerenciartitulares(time);
                         break;
                     }
                 }
@@ -247,6 +261,7 @@ void selecionartitulares(time* time) {
             printf("Jogador nao encontrado.\n");
             scanf("%*c");
             getchar();
+            gerenciartitulares(time);
             break;
         } else {
             printf("Deseja adicionar outro jogador titular? (S/N): ");
@@ -261,6 +276,14 @@ void selecionartitulares(time* time) {
 }
 
 void removertitular(time* time) {
+    if (time->numtitulares == 0) {
+        printf("Nenhum jogador titular para remover.\n");
+        printf("Digite algo para retornar ao menu.\n");
+        scanf("%*c");
+        getchar();
+        system("cls");
+        gerenciartitulares(time);;
+    }
 
     int numero;
     int jogadorEncontrado = 0;
@@ -286,21 +309,19 @@ void removertitular(time* time) {
         }
 
         if (!jogadorEncontrado) {
-            printf("Jogador titular de numero %d não encontrado.\n", numero);
+            printf("Jogador titular de numero %d nao encontrado.\n", numero);
         }
     }
 
     jogador jogadorRemovido = time->titulares[indiceJogador];
 
-    // Desloca os jogadores à esquerda do jogador removido
     for (int i = indiceJogador; i < time->numtitulares - 1; i++) {
         time->titulares[i] = time->titulares[i + 1];
     }
 
     time->numtitulares--;
 
-    // Insere o jogador removido no vetor de jogadores disponíveis
-    time->jogadores[time->numjogadores] = jogadorRemovido;
+    time->jogadores[time->numjogadores - 1] = jogadorRemovido;
     time->numjogadores++;
 
     printf("Jogador '%s' removido dos titulares.\n", jogadorRemovido.nome);
@@ -315,7 +336,75 @@ void removertitular(time* time) {
         printf("Digite algo para retornar ao menu.\n");
         scanf("%*c");
         getchar();
-
         system("cls");
+        gerenciartitulares(time);
     }
+}
+
+void gerenciartitulares(time* time) {
+    printf("Selecione a acao desejada:\n");
+    printf("[1] Adicionar jogador titular\n");
+    printf("[2] Remover jogador titular\n");
+    printf("[0] Voltar ao menu principal\n");
+
+    int opcao;
+    printf("Digite a opcao desejada: ");
+    scanf("%d", &opcao);
+
+    switch (opcao) {
+        case 1:
+            system("cls");
+            selecionartitulares(time);
+            break;
+        case 2:
+            system("cls");
+            removertitular(time);
+            break;
+        case 0:
+            system("cls");
+            printf("Voltando ao menu principal.\n");
+            break;
+        default:
+            system("cls");
+            printf("Opcao invalida.\n");
+            break;
+    }
+
+    system("cls");
+}
+
+void imprimirtabela(time* time) {
+
+    printf("Time: %s\n", time->nometime);
+
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 3; j++) {
+            int index = i * 3 + j;
+            if (index < time->numtitulares) {
+                jogador jogadorAtual = time->titulares[index];
+
+                if (strlen(jogadorAtual.nome) > 10) {
+                    jogadorAtual.nome[10] = '\0';
+                }
+
+                printf("%-10s   | ", jogadorAtual.nome);
+            } else {
+                printf("              | ");
+            }
+        }
+        printf("\n");
+        for (int j = 0; j < 3; j++) {
+            int index = i * 3 + j;
+            if (index < time->numtitulares) {
+                jogador jogadorAtual = time->titulares[index];
+                printf("%-10d   | ", jogadorAtual.numero);
+            } else {
+                printf("              | ");
+            }
+        }
+        printf("\n");
+    }
+    printf("Digite algo para voltar ao menu\n");
+    scanf("%*c");
+    getchar();
 }
