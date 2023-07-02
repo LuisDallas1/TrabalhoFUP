@@ -10,13 +10,21 @@ typedef struct {
     char nometime[100];
     jogador* jogadores;
     int numjogadores;
-    int formacao;
+    int formacao[2][3];
+    jogador* titulares;
+    int numtitulares;
 }time;
 
-int verificarnumeroexistente(const time* time, int numero);
+int verificarnumeroexistente(time* time, int numero);
 
 int adicionarjogador(time* time);
 
 int visualizarjogadores(time* time);
 
-int selecionarFormacao(time* time);
+int removerjogador(time* time);
+
+void selecionartitulares(time* time);
+
+void removertitular(time* time);
+
+void gerenciarFormacao(time *time);
