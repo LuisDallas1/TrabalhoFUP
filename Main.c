@@ -25,14 +25,12 @@ while (1)
     printf("Bem vindo ao menu!\n");
     printf("Seu time: %s\n\n", time.nometime);
 
-    printf("[1] se voce deseja adicionar jogador.\n");
-    printf("[2] se voce deseja remover jogador.\n");
-    printf("[3] se voce deseja adicionar jogadores aos titulares.\n");
-    printf("[4] se voce deseja remover jogadores dos titulares.\n");
-    printf("[5] para visualizar jogadores.\n");
-    printf("[6] se voce deseja gerenciar a formacao.\n");
-
-    printf("Digite 7 se voce deseja sair.\n");
+    printf("[1] Adcionar jogador.\n");
+    printf("[2] Remover jogador.\n");
+    printf("[3] Gerenciar titulares.\n");
+    printf("[4] Para visualizar jogadores.\n");
+    printf("[5] Para criar planilha de jogadores.\n");
+    printf("[0] Sair.\n");
 
     scanf("%d", &seletor);
 
@@ -53,35 +51,21 @@ while (1)
 
     case 3:
 
-        selecionartitulares(&time);
-        system("cls");
+        gerenciartitulares(&time);
         break;
-
+  
     case 4:
-
-        if (time.numtitulares == 0) {
-            printf("Nenhum jogador titular encontrado.\n");
-            printf("Digite algo para retornar ao menu.\n");
-            scanf("%*c");
-            getchar();
-            system("cls");
-        } else {
-            removertitular(&time);
-        }
-        break;
-
-    case 5:
 
         visualizarjogadores(&time);
         break;
 
-    case 6:
+    case 5:
 
-        gerenciarFormacao(&time);
+        imprimirtabela(&time);
         system("cls");
         break;
 
-    case 7:
+    case 0:
 
         printf("Saindo...\n");
         free(time.jogadores);
