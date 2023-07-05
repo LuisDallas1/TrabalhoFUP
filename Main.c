@@ -13,7 +13,7 @@ time.numjogadores = 0;
 time.jogadores = NULL;
 time.numtitulares = 0;
 
-printf("Bem vindo ao Volei Lineup!\nOnde voce montara o seu propio time de volei com os jogadores que voce quiser!\n");
+printf("Bem vindo ao Volei Quinta!\nOnde voce montara o seu propio time de volei com os jogadores que voce quiser!\n");
 printf("Primeiramente, insira o nome do seu time:\n");
 scanf("%[^\n]", time.nometime);
 system("cls");
