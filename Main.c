@@ -25,7 +25,7 @@ while (1)
     printf("Bem vindo ao menu!\n");
     printf("Seu time: %s\n\n", time.nometime);
 
-    printf("[1] Adcionar jogador.\n");
+    printf("[1] Adicionar jogador.\n");
     printf("[2] Remover jogador.\n");
     printf("[3] Gerenciar titulares.\n");
     printf("[4] Para visualizar jogadores.\n");
